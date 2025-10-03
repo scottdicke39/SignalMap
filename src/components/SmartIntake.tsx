@@ -531,6 +531,48 @@ export default function SmartIntake() {
     }
   };
 
+  const handleImportPlaybook = async () => {
+    try {
+      setBusy("Searching Confluence for playbooks...");
+      
+      // Search for playbook based on function and level
+      const searchQuery = `${extracted?.function || ''} ${level || ''} playbook hiring`.trim();
+      
+      const response = await fetch('/api/confluence/best-practices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          topic: 'hiring playbook',
+          stage: { name: jobTitle || 'Role' },
+          jobFunction: extracted?.function || '',
+          searchQuery
+        })
+      });
+      
+      if (!response.ok) throw new Error('Failed to search Confluence');
+      
+      const { practices } = await response.json();
+      
+      if (practices && practices.length > 0) {
+        // Show playbook selection modal
+        const selectedPlaybook = practices[0]; // For now, use first result
+        
+        // Parse and pre-fill strategic planning data
+        // This is a simplified version - you'd want to parse the Confluence content
+        setShowStrategicPlanning(true);
+        setBusy(null);
+        
+        // TODO: Parse the playbook content and populate StrategicPlanning fields
+        alert(`Found playbook: "${selectedPlaybook.title}"\n\nYou can now customize it for this specific role.`);
+      } else {
+        setBusy(null);
+        alert('No playbooks found. Try creating one in Confluence first.');
+      }
+    } catch (err) {
+      handleError(err, "import playbook from Confluence");
+    }
+  };
+
   const quickJD = `We are hiring a Senior Product Designer to drive end-to-end product experiences for our student-facing surfaces. You will partner with PM and Eng to deliver intuitive flows, run discovery, and ship high-quality work. Must have strong interaction design and communication skills. Nice to have: system thinking, design systems, analytics literacy.`;
 
   return (
@@ -595,12 +637,22 @@ export default function SmartIntake() {
               onClick={() => setShowComments(!showComments)}
               className="border-2 border-purple-300 text-purple-700 hover:bg-purple-50 rounded-xl font-medium gap-2"
               disabled={!savedIntake?.id}
-              title={!savedIntake?.id ? "Save your intake first to add comments" : "View comments"}
+              title={!savedIntake?.id ? "Save your intake first to add comments" : "View & add comments"}
             >
               <MessageCircle className="w-4 h-4" />
               {showComments ? 'Hide' : 'Show'} Comments
             </Button>
             
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.location.href = '/dashboard'}
+              className="border-2 border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl font-medium gap-2"
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              View All Intakes
+            </Button>
+
             <Button
               variant="outline"
               size="sm"
@@ -923,17 +975,41 @@ export default function SmartIntake() {
         </Card>
 
         {/* Strategic Planning Section */}
-        <Card className="shadow-sm">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">5) Strategic Planning</CardTitle>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setShowStrategicPlanning(!showStrategicPlanning)}
-              >
-                {showStrategicPlanning ? 'Hide' : 'Show'} Strategy
-              </Button>
+        <Card className="shadow-xl border-0 bg-white rounded-2xl overflow-hidden">
+          <div className="h-2 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-purple-600 to-pink-600 text-white flex items-center justify-center font-bold shadow-lg">
+                <ListChecks className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <CardTitle className="text-xl font-bold text-slate-900">
+                  5) Strategic Planning
+                </CardTitle>
+                <p className="text-sm text-slate-600">
+                  Define the bigger picture - ideal candidates, company objectives, and role pitch
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleImportPlaybook()}
+                  className="gap-2 rounded-xl border-2 border-purple-200 text-purple-700 hover:bg-purple-50"
+                  disabled={!!busy}
+                >
+                  <Upload className="w-4 h-4" />
+                  Import Playbook
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setShowStrategicPlanning(!showStrategicPlanning)}
+                  className="rounded-xl"
+                >
+                  {showStrategicPlanning ? 'Hide' : 'Show'} Strategy
+                </Button>
+              </div>
             </div>
           </CardHeader>
           {showStrategicPlanning && (
