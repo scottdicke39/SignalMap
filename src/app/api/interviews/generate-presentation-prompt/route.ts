@@ -129,7 +129,7 @@ Focus on evaluating: ${(stage.signals || []).join(', ')}`
   } catch (error) {
     console.error('Presentation prompt generation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate presentation prompt', details: error.message },
+      { error: 'Failed to generate presentation prompt', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

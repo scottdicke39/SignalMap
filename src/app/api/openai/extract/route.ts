@@ -105,7 +105,7 @@ Return exactly this structure:
   } catch (error) {
     console.error('OpenAI extraction error:', error);
     return NextResponse.json(
-      { error: 'Failed to analyze job description', details: error.message },
+      { error: 'Failed to analyze job description', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

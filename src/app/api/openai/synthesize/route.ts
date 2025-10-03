@@ -134,7 +134,7 @@ Org Context:
   } catch (error) {
     console.error('OpenAI synthesis error:', error);
     return NextResponse.json(
-      { error: 'Failed to synthesize interview loop', details: error.message },
+      { error: 'Failed to synthesize interview loop', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

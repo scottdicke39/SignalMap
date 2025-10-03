@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
       { 
         job: null,
         error: 'Failed to search Ashby',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Unknown error'
       },
       { status: 500 }
     );

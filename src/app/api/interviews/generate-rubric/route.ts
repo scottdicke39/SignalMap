@@ -103,7 +103,7 @@ The rubric should help interviewers consistently evaluate candidates on these sp
   } catch (error) {
     console.error('Rubric generation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate rubric', details: error.message },
+      { error: 'Failed to generate rubric', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

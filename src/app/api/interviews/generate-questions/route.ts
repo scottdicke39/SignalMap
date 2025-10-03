@@ -111,7 +111,7 @@ Focus on questions that will effectively evaluate: ${(stage.signals || []).join(
   } catch (error) {
     console.error('Interview questions generation error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate interview questions', details: error.message },
+      { error: 'Failed to generate interview questions', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

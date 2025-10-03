@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('OpenAI job description enhancement error:', error);
     return NextResponse.json(
-      { error: 'Failed to enhance job description', details: error.message },
+      { error: 'Failed to enhance job description', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
