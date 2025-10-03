@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import GleanClient from '@/lib/glean-client';
+import { convertMarkdownToSlack } from '@/lib/slack-formatter';
 
 export async function POST(request: Request) {
   try {
-    const { question } = await request.json();
+    const { question, formatForSlack } = await request.json();
 
     if (!question) {
       return NextResponse.json(
@@ -41,9 +42,14 @@ export async function POST(request: Request) {
       });
     }
 
+    // Format for Slack if requested
+    const formattedAnswer = formatForSlack 
+      ? convertMarkdownToSlack(result.answer)
+      : result.answer;
+
     return NextResponse.json({
       success: true,
-      answer: result.answer,
+      answer: formattedAnswer,
       source: 'Glean AI Agent'
     });
 
