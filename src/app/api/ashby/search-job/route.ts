@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       if (jobTitleLower.includes(searchTitleLower)) return true;
       
       // 3. All search words present in job title
-      const allWordsMatch = searchWords.every(word => jobTitleLower.includes(word));
+      const allWordsMatch = searchWords.every((word: string) => jobTitleLower.includes(word));
       if (allWordsMatch && searchWords.length >= 2) return true;
       
       // 4. Reverse - search string contains job title
