@@ -108,7 +108,7 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { commentId, resolved, resolved_by } = await request.json();
 
     if (!commentId) {
@@ -151,7 +151,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { searchParams } = new URL(request.url);
     const commentId = searchParams.get('commentId');
 

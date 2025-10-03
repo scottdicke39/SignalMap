@@ -36,6 +36,11 @@ export default function StrategicPlanning({ onAIAssist }: StrategicPlanningProps
     setStrategicData(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleAIAssist = (section: string) => {
+    const context = JSON.stringify(strategicData);
+    onAIAssist(section, context, true);
+  };
+
   const addTargetCompany = () => {
     if (newTargetCompany.trim()) {
       updateField('companiesToTarget', [...strategicData.companiesToTarget, newTargetCompany.trim()]);

@@ -274,14 +274,17 @@ export default function SmartIntake() {
     } else if (item.type === 'interviewStage') {
       // Add to interview loop if it exists
       if (loop) {
-        setLoop([...loop, {
-          stage: item.content,
-          duration: 60,
-          interviewers: [],
-          competencies: [],
-          questions: [],
-          rubric: ''
-        }]);
+        setLoop({
+          ...loop,
+          stages: [...loop.stages, {
+            name: item.content,
+            intent: '',
+            durationMins: 60,
+            signals: [],
+            interviewerHints: [],
+            formTemplateId: undefined
+          }]
+        });
       }
     }
   };
@@ -291,7 +294,7 @@ export default function SmartIntake() {
     if (org?.department && extracted && extracted.function !== org.department) {
       setExtracted(prev => prev ? {
         ...prev,
-        function: org.department
+        function: org.department || prev.function
       } : prev);
     }
   }, [org?.department, extracted?.function]);
@@ -304,7 +307,7 @@ export default function SmartIntake() {
         return;
       }
       setBusy("Analyzing JD with hiring context");
-      const res = await extractFromJD(jd, org);
+      const res = await extractFromJD(jd, org || undefined);
       // Override level with user input and function with department
       setExtracted({
         ...res,

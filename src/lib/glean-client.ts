@@ -64,7 +64,7 @@ export class GleanClient {
       return await response.json();
     } catch (error) {
       console.error('Glean API request failed:', error);
-      throw new Error(`Failed to connect to Glean: ${error.message}`);
+      throw new Error(`Failed to connect to Glean: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -182,7 +182,7 @@ export class GleanClient {
       console.error('Glean Agent query failed:', error);
       return {
         success: false,
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       };
     }
   }

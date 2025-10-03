@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Confluence publish error:', error);
     return NextResponse.json(
-      { error: 'Failed to publish to Confluence', details: error.message },
+      { error: 'Failed to publish to Confluence', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
@@ -218,7 +218,7 @@ function convertMarkdownToConfluenceStorage(markdown: string): string {
     .replace(/\n/g, '<br/>');
 
   // Wrap list items in ul tags
-  html = html.replace(/(<li>.*?<\/li>\s*)+/gs, '<ul>$&</ul>');
+  html = html.replace(/(<li>[\s\S]*?<\/li>\s*)+/g, '<ul>$&</ul>');
 
   return html;
 }

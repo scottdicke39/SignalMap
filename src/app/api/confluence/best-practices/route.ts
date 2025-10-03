@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Confluence best practices error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch best practices', details: error.message },
+      { error: 'Failed to fetch best practices', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

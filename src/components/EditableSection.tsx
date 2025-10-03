@@ -9,7 +9,7 @@ import { Plus, X, Edit, Check, Sparkles, CheckCircle2 } from 'lucide-react';
 
 interface Competency {
   name: string;
-  rationale: string;
+  rationale?: string;
 }
 
 interface EditableCompetenciesProps {

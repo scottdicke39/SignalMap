@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('CodeSignal test suggestion error:', error);
     return NextResponse.json(
-      { error: 'Failed to get CodeSignal test suggestions', details: error.message },
+      { error: 'Failed to get CodeSignal test suggestions', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }

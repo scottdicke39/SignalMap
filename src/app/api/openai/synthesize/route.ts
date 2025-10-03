@@ -51,7 +51,7 @@ Guidelines:
           content: `Create an interview loop for:
 
 Function: ${functionHint}
-Competencies: ${competencies.map(c => `${c.name}: ${c.rationale}`).join('; ')}
+Competencies: ${competencies.map((c: any) => `${c.name}: ${c.rationale}`).join('; ')}
 
 Org Context:
 - Manager: ${org.manager}

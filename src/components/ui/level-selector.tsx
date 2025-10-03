@@ -1,7 +1,6 @@
 "use client"
 
 import React from 'react';
-import { Select } from './select';
 
 export const IC_LEVELS = [
   { value: 'L1', label: 'L1 - Junior IC' },

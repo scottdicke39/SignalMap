@@ -42,9 +42,9 @@ export async function POST(request: NextRequest) {
       console.error('Glean API call failed, falling back to mock:', gleanError);
       
       // Fallback to enhanced mock data if Glean fails
-      const fallbackData = await generateRealisticOrgData(managerHint, jobTitle);
+      const fallbackData: any = await generateRealisticOrgData(managerHint, jobTitle);
       fallbackData._source = 'fallback'; // Indicate this is fallback data
-      fallbackData._gleanError = gleanError.message;
+      fallbackData._gleanError = gleanError instanceof Error ? gleanError.message : 'Unknown error';
       
       return NextResponse.json(fallbackData);
     }
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Glean org lookup error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch org context', details: error.message },
+      { error: 'Failed to fetch org context', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
