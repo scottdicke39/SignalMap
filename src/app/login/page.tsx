@@ -170,6 +170,18 @@ export default function Login() {
               </button>
             </div>
           </form>
+
+          {/* Skip Login Option */}
+          <div className="mt-6 pt-4 border-t border-slate-200 text-center">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => router.push('/')}
+              className="text-slate-600 hover:text-slate-800 text-sm"
+            >
+              Skip login and continue to app →
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
