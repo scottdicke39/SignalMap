@@ -6,7 +6,7 @@ export async function POST(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { user_email, user_name, comment, section } = await request.json();
 
     if (!comment || !comment.trim()) {
@@ -69,7 +69,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { searchParams } = new URL(request.url);
     const section = searchParams.get('section');
     const includeResolved = searchParams.get('includeResolved') === 'true';
