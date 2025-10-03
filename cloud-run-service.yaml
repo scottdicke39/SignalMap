@@ -1,0 +1,87 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: smartintake-ai
+  namespace: '468191624623'
+  annotations:
+    run.googleapis.com/client-name: gcloud
+    run.googleapis.com/client-version: latest
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+spec:
+  template:
+    metadata:
+      labels:
+        client.knative.dev/nonce: smartintake-2024
+        run.googleapis.com/startupProbeType: Custom
+      annotations:
+        autoscaling.knative.dev/maxScale: '10'
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/startup-cpu-boost: 'true'
+    spec:
+      containerConcurrency: 10
+      timeoutSeconds: 300
+      serviceAccountName: 468191624623-compute@developer.gserviceaccount.com
+      containers:
+      - name: smartintake-ai
+        image: us-central1-docker.pkg.dev/handshake-data-playground/ml-infrastructure/smartintake-ai:latest
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 256Mi
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: 'production'
+        - name: PORT  
+          value: '3000'
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: openai-api-key
+        - name: ASHBY_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: ashby-api-key
+        - name: CONFLUENCE_BASE_URL
+          value: 'https://joinhandshake.atlassian.net/wiki'
+        - name: CONFLUENCE_EMAIL
+          value: 'scott.dicke@joinhandshake.com'
+        - name: CONFLUENCE_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: confluence-api-token
+        - name: CONFLUENCE_INTAKE_PARENT_ID
+          value: '4184932704'
+        - name: NEXTAUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: latest
+              name: nextauth-secret
+        - name: NEXTAUTH_URL
+          value: 'https://smartintake-ai-468191624623.us-central1.run.app'
+        startupProbe:
+          timeoutSeconds: 240
+          periodSeconds: 240
+          failureThreshold: 1
+          httpGet:
+            path: /api/health
+            port: 3000
+  traffic:
+  - percent: 100
+    latestRevision: true
+
+
+
+
+
+
+
+
